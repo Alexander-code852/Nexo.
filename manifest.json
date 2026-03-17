@@ -1,0 +1,21 @@
+{
+  "name": "NEXO | Universo de Marcas",
+  "short_name": "NEXO",
+  "description": "El futuro en tu muñeca y belleza que ilumina.",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#16181c",
+  "theme_color": "#00f2ff",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/3176/3176294.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/3176/3176294.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

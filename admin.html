@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | NEXO Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="tech-theme" style="background: var(--bg-main);">
+
+    <header class="main-header" style="position: relative; padding: 15px 30px; border-bottom: 1px solid var(--glass-border); display: flex; justify-content: space-between; align-items: center;">
+        <span class="logo-nexo">NEXO.ADMIN</span>
+        <a href="index.html" class="btn-outline-white" style="text-decoration: none; padding: 8px 20px;"><i class="fa-solid fa-store"></i> Volver a la Tienda</a>
+    </header>
+
+    <main class="container" style="padding-top: 40px; min-height: 80vh;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+            <h1 class="title-lg">Gestión de Productos</h1>
+            <button class="btn-solid-white" onclick="AdminPanel.openModal()"><i class="fa-solid fa-plus"></i> Nuevo Producto</button>
+        </div>
+
+        <div style="background: var(--bg-secondary); border-radius: 12px; border: 1px solid var(--glass-border); overflow-x: auto;">
+            <table style="width: 100%; text-align: left; border-collapse: collapse;">
+                <thead>
+                    <tr style="border-bottom: 1px solid var(--glass-border); color: var(--text-muted);">
+                        <th style="padding: 15px;">ID</th>
+                        <th style="padding: 15px;">Imagen</th>
+                        <th style="padding: 15px;">Nombre</th>
+                        <th style="padding: 15px;">Sector</th>
+                        <th style="padding: 15px;">Precio</th>
+                        <th style="padding: 15px;">Stock</th>
+                        <th style="padding: 15px; text-align: center;">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="adminTableBody">
+                    </tbody>
+            </table>
+        </div>
+    </main>
+
+    <div id="adminModal" class="checkout-modal">
+        <div class="checkout-content" style="max-width: 500px;">
+            <button class="close-checkout" onclick="AdminPanel.closeModal()"><i class="fa-solid fa-xmark"></i></button>
+            <h2 class="title-lg" id="modalTitle" style="margin-bottom: 20px;">Agregar Producto</h2>
+            
+            <form id="adminForm" onsubmit="AdminPanel.saveProduct(event)">
+                <input type="hidden" id="prodId">
+                <div class="input-group" style="margin-bottom: 15px;"><input type="text" id="prodName" placeholder="Nombre del Producto" required class="form-input"></div>
+                <div style="display: flex; gap: 15px; margin-bottom: 15px;">
+                    <div class="input-group" style="flex: 1;"><input type="number" step="0.01" id="prodPrice" placeholder="Precio (ARS)" required class="form-input"></div>
+                    <div class="input-group" style="flex: 1;"><input type="number" id="prodStock" placeholder="Stock" required class="form-input"></div>
+                </div>
+                <div style="display: flex; gap: 15px; margin-bottom: 15px;">
+                    <select id="prodSector" class="form-input" style="flex: 1; padding: 15px;">
+                        <option value="tech">Tech</option>
+                        <option value="glow">Glow</option>
+                    </select>
+                    <div class="input-group" style="flex: 1;"><input type="text" id="prodCategory" placeholder="Categoría" required class="form-input"></div>
+                </div>
+                <div class="input-group" style="margin-bottom: 15px;"><input type="url" id="prodImg" placeholder="URL de la Imagen" required class="form-input"></div>
+                <div class="input-group" style="margin-bottom: 25px;"><textarea id="prodDesc" placeholder="Descripción" required class="form-input" rows="3"></textarea></div>
+                
+                <button type="submit" class="btn-solid-white" style="width: 100%;">Guardar Producto</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="datos.js"></script>
+    <script>
+        const AdminPanel = {
+            dbKey: 'nexo_database',
+            products: [],
+
+            init() {
+                // Sincroniza LocalStorage con datos.js la primera vez
+                const localDB = localStorage.getItem(this.dbKey);
+                if (!localDB) {
+                    localStorage.setItem(this.dbKey, JSON.stringify(productosDB));
+                    this.products = productosDB;
+                } else {
+                    this.products = JSON.parse(localDB);
+                }
+                this.renderTable();
+            },
+
+            formatPrice(val) {
+                return new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS' }).format(val);
+            },
+
+            renderTable() {
+                const tbody = document.getElementById('adminTableBody');
+                tbody.innerHTML = this.products.map(p => `
+                    <tr style="border-bottom: 1px solid var(--glass-border);">
+                        <td style="padding: 15px; color: var(--text-muted);">#${p.id}</td>
+                        <td style="padding: 15px;"><img src="${p.img}" style="width: 40px; height: 40px; border-radius: 8px; object-fit: cover;"></td>
+                        <td style="padding: 15px; font-weight: 600;">${p.name}</td>
+                        <td style="padding: 15px;"><span class="product-cat-label">${p.sector.toUpperCase()}</span></td>
+                        <td style="padding: 15px; color: var(--accent); font-weight: bold;">${this.formatPrice(p.price)}</td>
+                        <td style="padding: 15px;">${p.stock} un.</td>
+                        <td style="padding: 15px; text-align: center;">
+                            <button onclick="AdminPanel.editProduct(${p.id})" style="background: none; border: none; color: var(--accent); cursor: pointer; margin-right: 15px; font-size: 1.2rem;"><i class="fa-solid fa-pen-to-square"></i></button>
+                            <button onclick="AdminPanel.deleteProduct(${p.id})" style="background: none; border: none; color: var(--pink); cursor: pointer; font-size: 1.2rem;"><i class="fa-solid fa-trash"></i></button>
+                        </td>
+                    </tr>
+                `).join('');
+            },
+
+            openModal(editId = null) {
+                document.getElementById('adminModal').classList.add('active');
+                const form = document.getElementById('adminForm');
+                
+                if (editId) {
+                    document.getElementById('modalTitle').innerText = "Editar Producto";
+                    const p = this.products.find(x => x.id === editId);
+                    document.getElementById('prodId').value = p.id;
+                    document.getElementById('prodName').value = p.name;
+                    document.getElementById('prodPrice').value = p.price;
+                    document.getElementById('prodStock').value = p.stock;
+                    document.getElementById('prodSector').value = p.sector;
+                    document.getElementById('prodCategory').value = p.category;
+                    document.getElementById('prodImg').value = p.img;
+                    document.getElementById('prodDesc').value = p.desc;
+                } else {
+                    document.getElementById('modalTitle').innerText = "Agregar Producto";
+                    form.reset();
+                    document.getElementById('prodId').value = "";
+                }
+            },
+
+            closeModal() { document.getElementById('adminModal').classList.remove('active'); },
+
+            saveProduct(e) {
+                e.preventDefault();
+                const idVal = document.getElementById('prodId').value;
+                const newProd = {
+                    id: idVal ? parseInt(idVal) : Date.now(),
+                    name: document.getElementById('prodName').value,
+                    price: parseFloat(document.getElementById('prodPrice').value),
+                    stock: parseInt(document.getElementById('prodStock').value),
+                    sector: document.getElementById('prodSector').value,
+                    category: document.getElementById('prodCategory').value,
+                    img: document.getElementById('prodImg').value,
+                    desc: document.getElementById('prodDesc').value
+                };
+
+                if (idVal) {
+                    const idx = this.products.findIndex(p => p.id === newProd.id);
+                    this.products[idx] = newProd;
+                } else {
+                    this.products.push(newProd);
+                }
+
+                localStorage.setItem(this.dbKey, JSON.stringify(this.products));
+                this.renderTable();
+                this.closeModal();
+            },
+
+            deleteProduct(id) {
+                if(confirm("¿Estás seguro de eliminar este producto?")) {
+                    this.products = this.products.filter(p => p.id !== id);
+                    localStorage.setItem(this.dbKey, JSON.stringify(this.products));
+                    this.renderTable();
+                }
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', () => AdminPanel.init());
+    </script>
+</body>
+</html>

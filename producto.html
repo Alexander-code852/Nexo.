@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle | NEXO</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+</head>
+<body class="tech-theme"> <div class="main-content fade-transition">
+        <header class="main-header" id="mainHeader">
+            <nav class="pill-nav">
+                <div class="logo-group">
+                    <a href="index.html" style="text-decoration: none;">
+                        <span class="logo-nexo" id="navLogo">NEXO.</span>
+                    </a>
+                </div>
+                
+                <div class="icons-group">
+                    <div class="user-icon" id="userBtn" title="Mi Cuenta" aria-label="Mi cuenta" role="button" tabindex="0">
+                        <i class="fa-regular fa-user"></i>
+                    </div>
+                    <div class="cart-icon" id="cartTrigger" aria-label="Abrir carrito" role="button" tabindex="0">
+                        <i class="fa-solid fa-bag-shopping"></i>
+                        <span class="cart-count" id="cart-qty">0</span>
+                    </div>
+                </div>
+            </nav>
+        </header>
+
+        <main class="container" id="detalleProducto" style="padding-top: 120px; min-height: 80vh;">
+            <div style="text-align: center; color: var(--text-muted); padding: 100px 0;">
+                <div class="spinner"></div>
+                <h2>Cargando diseño...</h2>
+            </div>
+        </main>
+        
+        <footer style="text-align: center; color: var(--text-muted); font-size: 0.8rem; padding: 40px 0; border-top: 1px solid var(--glass-border); margin-top: 40px;">
+            &copy; 2024 NEXO. Todos los derechos reservados.
+        </footer>
+    </div>
+
+    <div id="cartOverlay" class="cart-overlay"></div>
+
+    <div id="cartPanel" class="cart-sidebar">
+        <div class="cart-header">
+            <h3 id="cartTitle" class="title-lg" style="font-size: 1.5rem;">Tu Carrito</h3>
+            <button class="close-cart" id="closeCart" aria-label="Cerrar carrito"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div id="cartItems" class="cart-items-list"></div>
+        <div class="cart-footer">
+            <div class="total-container">
+                <span class="total-label">Subtotal:</span>
+                <span id="totalVal" class="total-price">$0.00</span>
+            </div>
+            <button class="checkout-btn" id="checkoutBtn" onclick="GT_Store.openCheckout()">
+                <span>Finalizar Compra</span>
+                <i class="fa-solid fa-arrow-right"></i>
+            </button>
+        </div>
+    </div>
+
+    <div id="profileModal" class="checkout-modal">
+        <div class="checkout-content profile-box">
+            <button class="close-checkout" aria-label="Cerrar perfil" onclick="GT_Store.closeProfile()"><i class="fa-solid fa-xmark"></i></button>
+            <div style="text-align: center; margin-bottom: 25px;">
+                <div class="profile-avatar"><i class="fa-solid fa-user"></i></div>
+                <h2 class="title-lg" id="profileName">Mi Perfil</h2>
+                <p class="text-muted" id="profileEmail">correo@ejemplo.com</p>
+            </div>
+            <h3 class="estrella-title" style="margin-bottom: 15px; border-bottom: 1px solid var(--glass-border); padding-bottom: 10px;">Historial de Pedidos</h3>
+            <div id="orderHistoryContainer" class="orders-scroll"></div>
+            <button class="btn-outline-white" style="width: 100%; margin-top: 20px; color: var(--pink); border-color: var(--pink);" onclick="GT_Store.confirmLogout()">
+                <i class="fa-solid fa-right-from-bracket"></i> Cerrar Sesión
+            </button>
+        </div>
+    </div>
+
+    <div id="authModal" class="checkout-modal">
+        <div class="checkout-content auth-box">
+            <button class="close-checkout" aria-label="Cerrar autenticación" onclick="GT_Store.closeAuth()"><i class="fa-solid fa-xmark"></i></button>
+            <div style="text-align: center; margin-bottom: 30px;">
+                <span class="logo-nexo" id="modalLogo" style="font-size: 2.5rem; display: inline-block; margin-bottom: 10px;">NEXO.</span>
+                <h2 class="title-lg" id="authTitle" style="font-size: 1.8rem;">Iniciar Sesión</h2>
+                <p class="text-muted" id="authSubtitle" style="margin-top: 5px;">Accede a tu cuenta para continuar.</p>
+            </div>
+            <form id="authForm" onsubmit="GT_Store.submitAuth(event)">
+                <div id="registerFields" style="display: none; animation: fadeIn 0.4s ease;">
+                    <div class="input-group auth-input">
+                        <i class="fa-regular fa-user input-icon"></i>
+                        <input type="text" id="authName" placeholder="Nombre Completo">
+                    </div>
+                </div>
+                <div class="input-group auth-input">
+                    <i class="fa-regular fa-envelope input-icon"></i>
+                    <input type="email" id="authEmail" placeholder="Correo Electrónico" required>
+                </div>
+                <div class="input-group auth-input" style="position: relative;">
+                    <i class="fa-solid fa-lock input-icon"></i>
+                    <input type="password" id="authPass" placeholder="Contraseña" required minlength="6">
+                    <button type="button" class="toggle-pass" aria-label="Mostrar/Ocultar contraseña" onclick="GT_Store.togglePassword()"><i class="fa-regular fa-eye" id="eyeIcon"></i></button>
+                </div>
+                <button type="submit" class="checkout-btn" style="margin-top: 10px;">
+                    <span id="authBtnText">Ingresar</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </form>
+            <p class="text-muted" style="text-align: center; margin-top: 25px; font-size: 0.9rem;">
+                <span id="authSwitchText">¿No tienes cuenta?</span> 
+                <a href="#" onclick="GT_Store.toggleAuthMode(); return false;" style="color: var(--accent); font-weight: bold; text-decoration: none; transition: 0.3s;">Regístrate aquí</a>
+            </p>
+        </div>
+    </div>
+
+    <div id="checkoutModal" class="checkout-modal">
+        <div class="checkout-content" id="checkoutContent">
+            <button class="close-checkout" aria-label="Cerrar checkout" onclick="GT_Store.closeCheckout()"><i class="fa-solid fa-xmark"></i></button>
+            <h2 class="title-lg" style="font-size: 2rem; margin-bottom: 10px;">Checkout Seguro</h2>
+            <p class="text-muted">Procesamiento encriptado de punta a punta.</p>
+            <div class="checkout-grid">
+                <div class="checkout-form">
+                    <h3 class="estrella-title">Datos de Envío</h3>
+                    <div class="input-group"><input type="text" placeholder="Nombre Completo" required class="form-input"></div>
+                    <div class="input-group" style="margin-top: 15px;"><input type="text" placeholder="Dirección de Envío" required class="form-input"></div>
+                    <h3 class="estrella-title" style="margin-top: 30px;">Método de Pago</h3>
+                    <div class="payment-methods">
+                        <label class="pay-method active"><input type="radio" name="payment" value="card" checked onchange="GT_Store.togglePaymentFields()"><i class="fa-regular fa-credit-card"></i> Tarjeta</label>
+                        <label class="pay-method"><input type="radio" name="payment" value="mercadopago" onchange="GT_Store.togglePaymentFields()"><i class="fa-solid fa-handshake"></i> Transferencia</label>
+                    </div>
+                    <div id="cardFields" class="card-fields">
+                        <div class="input-group" style="margin-top: 15px;"><input type="text" placeholder="Número de Tarjeta (Simulada)" maxlength="19" class="form-input"></div>
+                        <div class="row-inputs" style="display: flex; gap: 15px; margin-top: 15px;">
+                            <div class="input-group" style="flex: 1;"><input type="text" placeholder="MM/AA" maxlength="5" class="form-input"></div>
+                            <div class="input-group" style="flex: 1;"><input type="text" placeholder="CVC" maxlength="4" class="form-input"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="checkout-summary">
+                    <h3 class="estrella-title" id="checkoutSummaryTitle">Resumen de Pedido</h3>
+                    <div id="checkoutItemsContainer" class="checkout-items-scroll"></div>
+                    <div class="checkout-total">
+                        <span class="title-lg" style="font-size:1.5rem;">Total:</span>
+                        <span id="checkoutTotalVal" class="text-gradient" style="font-family: var(--font-title); font-size: 2rem;">$0.00</span>
+                    </div>
+                    <button class="checkout-btn" style="margin-top: 25px;" onclick="GT_Store.processPayment(this)">
+                        <span>Pagar Ahora</span>
+                        <i class="fa-solid fa-shield-halved"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="toastContainer" class="toast-container"></div>
+
+    <script src="datos.js"></script>
+    <script src="script.js"></script>
+
+    <script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('sw.js')
+        .then(reg => console.log('Service Worker registrado con éxito.', reg))
+        .catch(err => console.error('Error al registrar el Service Worker.', err));
+    });
+  }
+</script>
+</body>
+</html>

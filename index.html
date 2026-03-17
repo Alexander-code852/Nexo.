@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEXO. | Universo de Marcas</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+</head>
+<body class="tech-theme">
+
+    <div id="preloader" class="preloader">
+        <span class="logo-nexo pulsing-logo">NEXO.</span>
+    </div>
+
+    <main id="mainUI" class="main-content fade-transition">
+        <div id="themeTransition" class="theme-transition"></div>
+
+        <header class="main-header" id="mainHeader">
+            <nav class="pill-nav">
+                <button class="mobile-menu-btn" aria-label="Abrir menú móvil" onclick="GT_Store.toggleMobileMenu()"><i class="fa-solid fa-bars"></i></button>
+
+                <div class="logo-group">
+                    <span class="logo-nexo" id="navLogo" onclick="GT_Store.navigate('home')" style="cursor: pointer;">NEXO.TECH</span>
+                </div>
+                
+                <div class="sector-switcher" id="mainSectorSwitcher">
+                    <button class="sector-btn active" id="btnTech" onclick="GT_Store.switchSector('tech', event)">TECH</button>
+                    <button class="sector-btn" id="btnGlow" onclick="GT_Store.switchSector('glow', event)">GLOW</button>
+                </div>
+
+                <div class="icons-group">
+                    <a href="admin.html" class="user-icon" title="Panel de Administración" aria-label="Admin" style="text-decoration: none;"><i class="fa-solid fa-gear"></i></a>
+                    <div class="user-icon" id="userBtn" title="Mi Cuenta" aria-label="Mi cuenta" role="button" tabindex="0">
+                        <i class="fa-regular fa-user"></i>
+                    </div>
+                    <div class="cart-icon" id="cartTrigger" aria-label="Abrir carrito" role="button" tabindex="0">
+                        <i class="fa-solid fa-bag-shopping"></i>
+                        <span class="cart-count" id="cart-qty">0</span>
+                    </div>
+                </div>
+            </nav>
+        </header>
+
+        <div id="mobileMenuOverlay" class="mobile-menu-overlay" onclick="if(event.target === this) GT_Store.toggleMobileMenu()">
+            <button class="close-menu-btn" aria-label="Cerrar menú móvil" onclick="GT_Store.toggleMobileMenu()"><i class="fa-solid fa-xmark"></i></button>
+            <div class="mobile-links">
+                <a href="#" onclick="GT_Store.navigate('home'); GT_Store.toggleMobileMenu(); return false;">Inicio</a>
+                <a href="admin.html">Administración</a>
+            </div>
+        </div>
+
+        <div id="view-home" class="spa-view active-view">
+            <section id="inicio" class="hero-section">
+                <div class="hero-container container">
+                    <div class="hero-visual-left">
+                        <img id="heroImg" src="https://images.unsplash.com/photo-1579586337278-3befd40fd17a?auto=format&fit=crop&q=80&w=800" alt="NEXO Hero" class="main-hero-img">
+                    </div>
+                    <div class="hero-content-right">
+                        <h1 class="hero-title" id="heroTitle">EL FUTURO EN<br><span class="text-gradient">TU MUÑECA</span></h1>
+                        <p class="hero-subtitle" id="heroSubtitle">NEXO.TECH presenta la nueva era de la tecnología vestible. Diseño premium, funcionalidad sin límites.</p>
+                        <div class="hero-btns-row">
+                            <button class="btn-solid-white" onclick="document.getElementById('tienda').scrollIntoView()">COMPRAR AHORA</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="estrella-section container">
+                <h3 class="estrella-title" id="estrellaTitle">PRODUCTOS ESTRELLA TECH</h3>
+                <div class="estrella-cards" id="estrellaCardsContainer"></div>
+            </section>
+
+            <section id="tienda" class="container shop-section">
+                <div class="section-header reveal">
+                    <h2 class="title-lg" id="catalogoTitle">Catálogo Tech</h2>
+                    
+                    <div class="search-bar-container">
+                        <select id="categoryFilter" onchange="GT_Store.handleFilter(this.value)" class="category-select">
+                            <option value="all" style="color: black;">Todas</option>
+                        </select>
+                        <div class="divider"></div>
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" id="searchInput" placeholder="Buscar productos..." oninput="GT_Store.handleSearch(this.value)">
+                    </div>
+                </div>
+                <div class="product-grid" id="productGrid"></div>
+            </section>
+
+            <section class="payment-banner container reveal" style="margin-bottom: 60px; text-align: center;">
+                <h3 class="estrella-title">MÉTODOS DE PAGO ACEPTADOS</h3>
+                <div class="payment-icons">
+                    <i class="fa-brands fa-cc-visa"></i>
+                    <i class="fa-brands fa-cc-mastercard"></i>
+                    <i class="fa-brands fa-cc-amex"></i>
+                    <i class="fa-brands fa-cc-paypal"></i>
+                    <i class="fa-solid fa-money-bill-transfer"></i>
+                </div>
+            </section>
+        </div>
+
+        <div id="view-product" class="spa-view container" style="padding-top: 120px; min-height: 80vh;">
+            <button class="btn-outline-white" style="margin-bottom: 30px;" onclick="GT_Store.navigate('home')"><i class="fa-solid fa-arrow-left"></i> Volver a la tienda</button>
+            <div id="detalleProductoContainer"></div>
+        </div>
+        
+        <footer style="text-align: center; color: var(--text-muted); font-size: 0.8rem; padding: 40px 0; border-top: 1px solid var(--glass-border); margin-top: 40px;">
+            &copy; 2024 NEXO. Todos los derechos reservados.
+        </footer>
+    </main> 
+    
+    <div id="cartOverlay" class="cart-overlay"></div>
+    <div id="cartPanel" class="cart-sidebar">
+        <div class="cart-header">
+            <h3 id="cartTitle" class="title-lg" style="font-size: 1.5rem;">Tu Carrito</h3>
+            <button class="close-cart" id="closeCart" aria-label="Cerrar carrito"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div id="cartItems" class="cart-items-list"></div>
+        <div class="cart-footer">
+            <div class="total-container">
+                <span class="total-label">Subtotal:</span>
+                <span id="totalVal" class="total-price">$0.00</span>
+            </div>
+            <button class="checkout-btn" id="checkoutBtn" onclick="GT_Store.openCheckout()">
+                <span>Finalizar Compra</span>
+                <i class="fa-solid fa-arrow-right"></i>
+            </button>
+        </div>
+    </div>
+
+    <div id="toastContainer" class="toast-container"></div>
+
+    <script src="datos.js"></script>
+    <script src="script.js"></script>
+    <script>
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js')
+            .then(reg => console.log('Service Worker registrado con éxito.', reg))
+            .catch(err => console.error('Error al registrar el Service Worker.', err));
+        });
+    }
+    </script>
+</body>
+</html>
